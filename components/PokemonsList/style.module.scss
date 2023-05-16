@@ -1,0 +1,22 @@
+.List {
+  margin-top: 12px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 100vh;
+}
+
+.Search {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  height: 64px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+
+  & > input {
+    max-width: 500px;
+    margin-inline: auto;
+  }
+}

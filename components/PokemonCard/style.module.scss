@@ -1,0 +1,63 @@
+.card {
+  width: 200px;
+  height: 400px;
+  position: relative;
+}
+
+.name {
+  margin-top: 16px;
+  width: 100%;
+  text-align: center;
+}
+.name > h6 {
+  width: 100%;
+  text-transform: uppercase;
+}
+
+.types {
+  width: 100%;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.types > ul {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.types > ul > li {
+  width: 45%;
+  height: 30px;
+  border-radius: 15px;
+  text-align: center;
+  line-height: 30px;
+  color: white;
+}
+
+.stat {
+  position: relative;
+}
+.stat > p {
+  font-size: 18px;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.stat > p:first-child {
+  opacity: 0;
+}
+.stat > p:last-child {
+  top: 40%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(1.5);
+  transition: transform 0.3s ease-in-out;
+}
+.stat:hover > p:first-child {
+  opacity: 1;
+  transform: translateY(60%);
+}
+.stat:hover > p:last-child {
+  transform: translate(-50%, -80%) scale(2);
+}

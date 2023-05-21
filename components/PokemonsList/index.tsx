@@ -30,7 +30,7 @@ export default (() => {
         pokemon.name.includes(search.toLowerCase())
       )
     )
-  }, [search, pokemons, typedPokemons])
+  }, [search, pokemons, typedPokemons, types.length])
 
   useEffect(() => {
     setData(filtered.slice(0, Math.min(12, filtered.length)))

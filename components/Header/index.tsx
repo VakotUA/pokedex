@@ -23,7 +23,7 @@ export default (() => {
 
   useEffect(() => {
     dispatch(searchActions.setSearch(debouncedSearch))
-  }, [debouncedSearch])
+  }, [debouncedSearch, dispatch])
 
   return (
     <Layout.Header className={style.Header}>

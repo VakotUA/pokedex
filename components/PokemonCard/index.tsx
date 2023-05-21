@@ -47,6 +47,7 @@ export default (({ pokemon }) => {
       hoverable
       cover={
         <Image
+          alt="cover"
           className={style.Image}
           preview={{ visible: false }}
           onClick={() => {
@@ -83,7 +84,7 @@ export default (({ pokemon }) => {
           }}
         >
           {images.map((image: string, index: number) => (
-            <Image key={index} src={image} />
+            <Image key={index} src={image} alt={pokemon.name} />
           ))}
         </Image.PreviewGroup>
       </div>

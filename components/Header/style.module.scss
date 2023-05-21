@@ -1,0 +1,17 @@
+.Header {
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  position: sticky;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  width: 100%;
+}
+
+.Search,
+.Select {
+  width: 300px;
+}

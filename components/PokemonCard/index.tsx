@@ -8,49 +8,36 @@ import { useGetPokemonQuery } from '@modules/api/Pokemons'
 import { GiLibertyWing, GiPiercingSword, GiPointySword, GiEdgedShield } from 'react-icons/gi'
 import { BsShieldShaded } from 'react-icons/bs'
 import { FaHeartbeat } from 'react-icons/fa'
+import { INamedAPIResource, IStat, IType } from '@modules/models/Pokemon'
 
 export default (({ pokemon }) => {
   const { data, error, isLoading } = useGetPokemonQuery(pokemon.url)
 
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState<boolean>(false)
+  const [images, setImages] = useState<string[]>([])
+
+  const [coverImage, setCoverImage] = useState<string | undefined>()
+
+  const [colors, setColors] = useState<{ text: string; bg: string }>()
 
   if (error) {
-    return console.error(error)
+    console.error(error)
   }
-
-  const [info, setInfo] = useState<any | null>({
-    name: 'Unknown',
-    types: [],
-    image: null,
-    images: [],
-    stats: [],
-    baseExperience: 0,
-    bgColor: 'white',
-    textColor: 'white',
-  })
 
   useEffect(() => {
     if (!data) return
 
-    const images = [
-      ...Object.values(data.sprites.other.dream_world).filter((img) => img),
-      ...Object.values(data.sprites.other.home).filter((img) => img),
-      ...Object.values(data.sprites.other['official-artwork']).filter((img) => img),
-    ]
-
-    setInfo({
-      name: data.name,
-      types: data.types,
-      image:
-        data.sprites.other.dream_world.front_default ||
-        data.sprites.front_default ||
-        (images.length && images[0]),
-      images: images,
-      stats: data.stats,
-      baseExperience: data.base_experience,
-      bgColor: data.types.length > 0 ? `var(--bg-${data.types[0].type.name}, white)` : '',
-      textColor: data.types.length > 0 ? `var(--color-${data.types[0].type.name}, white)` : '',
+    setColors({
+      text: `var(--color-${data.types[0].type.name})`,
+      bg: `var(--bg-${data.types[0].type.name})`,
     })
+
+    setCoverImage(
+      data.sprites.other.dream_world.front_default ||
+        data.sprites.front_default ||
+        data.sprites.front_shiny ||
+        undefined
+    )
   }, [data])
 
   return (
@@ -59,58 +46,79 @@ export default (({ pokemon }) => {
       loading={isLoading}
       hoverable
       cover={
-        <>
-          <Image
-            preview={{ visible: false }}
-            onClick={() => setVisible(true)}
-            height={200}
-            src={info.image}
-            style={{ background: info.bgColor, padding: '30px' }}
-          />
-          <div style={{ display: 'none' }}>
-            <Image.PreviewGroup preview={{ visible, onVisibleChange: (vis) => setVisible(vis) }}>
-              {info?.images.length &&
-                info.images.map((image: string, index: number) => (
-                  <Image key={index} src={image} />
-                ))}
-            </Image.PreviewGroup>
-          </div>
-        </>
+        <Image
+          className={style.Image}
+          preview={{ visible: false }}
+          onClick={() => {
+            setVisible(true)
+            setImages(
+              [
+                data?.sprites.front_default,
+                data?.sprites.front_female,
+                data?.sprites.back_default,
+                data?.sprites.back_female,
+                data?.sprites.front_shiny,
+                data?.sprites.back_shiny,
+                data?.sprites.back_shiny_female,
+                data?.sprites.front_shiny_female,
+                data?.sprites.other.dream_world.front_default,
+                data?.sprites.other.dream_world.front_female,
+                data?.sprites.other.home.front_default,
+                data?.sprites.other.home.front_female,
+                data?.sprites.other['official-artwork'].front_default,
+              ].filter((img) => img) as string[]
+            )
+          }}
+          height={200}
+          src={coverImage}
+          style={{ background: colors?.bg, padding: 16 }}
+        />
       }
     >
-      {info && (
-        <div className={style.name}>
-          <h6 style={{ color: info.textColor }}>{`Experience ${info.baseExperience}`}</h6>
-          <h1>{pokemon.name.charAt(0).toUpperCase() + pokemon.name.substring(1)}</h1>
-        </div>
-      )}
+      <div style={{ display: 'none' }}>
+        <Image.PreviewGroup
+          preview={{
+            visible,
+            onVisibleChange: (vis) => setVisible(vis),
+          }}
+        >
+          {images.map((image: string, index: number) => (
+            <Image key={index} src={image} />
+          ))}
+        </Image.PreviewGroup>
+      </div>
 
-      {info && (
-        <div className={style.types}>
-          <ul>
-            {info.types.map((type: any, index: number) => (
-              <li style={{ background: `var(--bg-${type.type.name}, white)` }} key={index}>
-                {type.type.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div className={style.name}>
+        <h1>
+          {pokemon.name.charAt(0).toUpperCase() + pokemon.name.substring(1)}
+          <br />
+          <span style={{ color: colors?.text }}>{data?.base_experience}xp</span>
+        </h1>
+      </div>
 
-      {info &&
-        info.stats.map((stat: any, index: number) => (
-          <Card.Grid className={style.stat} style={{ background: info.bgColor }} key={index}>
-            <p>{stat.base_stat}</p>
-            <p>
-              {stat.stat.name === 'hp' ? <FaHeartbeat /> : ''}
-              {stat.stat.name === 'attack' ? <GiPiercingSword /> : ''}
-              {stat.stat.name === 'defense' ? <BsShieldShaded /> : ''}
-              {stat.stat.name === 'special-attack' ? <GiPointySword /> : ''}
-              {stat.stat.name === 'special-defense' ? <GiEdgedShield /> : ''}
-              {stat.stat.name === 'speed' ? <GiLibertyWing /> : ''}
-            </p>
-          </Card.Grid>
-        ))}
+      <div className={style.types}>
+        <ul>
+          {data?.types.map((type: IType, index: number) => (
+            <li style={{ background: `var(--bg-${type.type.name})` }} key={index}>
+              {type.type.name}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {data?.stats.map((stat: IStat, index: number) => (
+        <Card.Grid className={style.stat} style={{ background: colors?.bg }} key={index}>
+          <p>{stat.base_stat}</p>
+          <p>
+            {stat.stat.name === 'hp' ? <FaHeartbeat /> : ''}
+            {stat.stat.name === 'attack' ? <GiPiercingSword /> : ''}
+            {stat.stat.name === 'defense' ? <BsShieldShaded /> : ''}
+            {stat.stat.name === 'special-attack' ? <GiPointySword /> : ''}
+            {stat.stat.name === 'special-defense' ? <GiEdgedShield /> : ''}
+            {stat.stat.name === 'speed' ? <GiLibertyWing /> : ''}
+          </p>
+        </Card.Grid>
+      ))}
     </Card>
   )
-}) as React.FC<{ pokemon: { name: string; url: string } }>
+}) as React.FC<{ pokemon: INamedAPIResource }>

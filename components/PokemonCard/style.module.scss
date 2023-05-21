@@ -9,9 +9,18 @@
   width: 100%;
   text-align: center;
 }
-.name > h6 {
+.name > p {
   width: 100%;
   text-transform: uppercase;
+  line-height: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+}
+.name > p > span {
+  font-size: 20px;
+  font-weight: 900;
 }
 
 .types {
@@ -37,6 +46,8 @@
 
 .stat {
   position: relative;
+  text-align: center;
+  color: white;
 }
 .stat > p {
   font-size: 18px;

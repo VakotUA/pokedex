@@ -1,7 +1,13 @@
 import { NextPage } from 'next'
 
+import Filters from '@components/Filters'
 import PokemonsList from '@components/PokemonsList'
 
 export default (() => {
-  return <PokemonsList />
+  return (
+    <>
+      <Filters />
+      <PokemonsList />
+    </>
+  )
 }) as NextPage

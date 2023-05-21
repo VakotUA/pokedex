@@ -1,0 +1,13 @@
+.ScrollableElement {
+  position: fixed;
+  top: 64px; // header height
+  left: 0;
+  width: 100%;
+  transition: transform 0.3s ease-out;
+  transform: translateY(0);
+  z-index: 9;
+}
+
+.ScrollableElement.Hidden {
+  transform: translateY(-100%);
+}
